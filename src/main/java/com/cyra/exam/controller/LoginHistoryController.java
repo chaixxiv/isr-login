@@ -1,10 +1,12 @@
 package com.cyra.exam.controller;
 
+import com.cyra.exam.domain.UserCount;
 import com.cyra.exam.service.LoginHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,17 +28,10 @@ public class LoginHistoryController {
         return new ResponseEntity<>(uniqueDates, HttpStatus.OK);
     }
 
-//    @InitBinder
-//    public void initBinder(WebDataBinder binder){
-//        binder.registerCustomEditor(Date.class,
-//                new CustomDateEditor(new SimpleDateFormat("yyyyMMdd"), true, 8));
-//    }
-
     @GetMapping("/users")
     public ResponseEntity<List<String>> getUsersByLoginDate(@RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate start,
                                                             @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate end) {
         Map<String, LocalDate> dateMap = new HashMap<>();
-
         if (start != null) {
             dateMap.put("start", start);
         }
@@ -47,7 +42,12 @@ public class LoginHistoryController {
 
         List<String> users = loginHistoryService.getUsersByLoginDate(dateMap);
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
 
+    @GetMapping("/logins")
+    public ResponseEntity<List<UserCount>> getUserLoggedTimes(@RequestParam MultiValueMap<String, String> queryMap) {
 
+        List<UserCount> users = loginHistoryService.getUserAndLoggedTimes(queryMap);
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }
