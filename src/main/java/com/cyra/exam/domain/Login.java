@@ -4,32 +4,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-@Entity
-@Table(name = "login")
 public class Login {
 
-    @Column
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
     public Long id;
-
-    @Column(name = "login_time")
-    @Temporal(TemporalType.DATE)
     public Date loginTime;
-
-    @Column
     public String user;
-
-    @Column
     public String attribute1;
-
-    @Column
     public String attribute2;
-
-    @Column
     public String attribute3;
-
-    @Column
     public String attribute4;
 
     public Long getId() {
