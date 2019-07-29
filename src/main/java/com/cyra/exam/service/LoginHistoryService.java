@@ -1,12 +1,12 @@
 package com.cyra.exam.service;
 
 import com.cyra.exam.dao.LoginHistoryDao;
-import com.cyra.exam.domain.Login;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LoginHistoryService {
@@ -14,7 +14,11 @@ public class LoginHistoryService {
     @Autowired
     private LoginHistoryDao loginHistoryDao;
 
-    public List<Date> getUniqueDates() {
+    public List<LocalDate> getUniqueDates() {
         return loginHistoryDao.getUniqueDates();
+    }
+
+    public List<String> getUsersByLoginDate(Map<String, LocalDate> dateMap){
+        return loginHistoryDao.getUsersByLoginDate(dateMap);
     }
 }

@@ -1,8 +1,10 @@
 package com.cyra.exam.dao;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface LoginHistoryDao {
-    List<Date> getUniqueDates();
+    List<LocalDate> getUniqueDates();
+    List<String> getUsersByLoginDate(Map<String, LocalDate> dateMap);
 }
