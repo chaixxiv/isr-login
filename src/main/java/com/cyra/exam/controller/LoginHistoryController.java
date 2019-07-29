@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @RestController("/")
 public class LoginHistoryController {
@@ -31,23 +30,19 @@ public class LoginHistoryController {
     @GetMapping("/users")
     public ResponseEntity<List<String>> getUsersByLoginDate(@RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate start,
                                                             @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate end) {
-        Map<String, LocalDate> dateMap = new HashMap<>();
-        if (start != null) {
-            dateMap.put("start", start);
-        }
-
-        if (end != null) {
-            dateMap.put("end", end);
-        }
-
-        List<String> users = loginHistoryService.getUsersByLoginDate(dateMap);
+        List<String> users = loginHistoryService.getUsersByLoginDate(Optional.ofNullable(start), Optional.ofNullable(end));
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/logins")
-    public ResponseEntity<List<UserCount>> getUserLoggedTimes(@RequestParam MultiValueMap<String, String> queryMap) {
+    public ResponseEntity<List<UserCount>> getUserLoggedTimes(
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate start,
+            @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate end,
+            @RequestParam MultiValueMap<String, String> queryMap) {
 
-        List<UserCount> users = loginHistoryService.getUserAndLoggedTimes(queryMap);
+        queryMap.remove("start");
+        queryMap.remove("end");
+        List<UserCount> users = loginHistoryService.getUserAndLoggedTimes(Optional.ofNullable(start), Optional.ofNullable(end), queryMap);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 }

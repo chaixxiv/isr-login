@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -32,18 +32,20 @@ public class LoginHistoryDaoImpl implements LoginHistoryDao {
         return jdbcTemplate.queryForList("SELECT DISTINCT DATE(login_time) from login order by login_time asc", Collections.emptyMap(), LocalDate.class);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
-    public List<String> getUsersByLoginDate(Map<String, LocalDate> dateMap) {
+    public List<String> getUsersByLoginDate(Optional<LocalDate> start, Optional<LocalDate> end) {
         StringBuilder query = new StringBuilder("select distinct user from login");
         MapSqlParameterSource params = new MapSqlParameterSource();
         List<String> whereCriteria = new ArrayList<>();
-        if (dateMap.containsKey(START_DATE)) {
+        //TODO: reduce duplication
+        if (start.isPresent()) {
             whereCriteria.add(" date(login_time) >= :" + START_DATE);
-            params.addValue(START_DATE, dateMap.get(START_DATE));
+            params.addValue(START_DATE, start.get());
         }
-        if (dateMap.containsKey(END_DATE)) {
+        if (end.isPresent()) {
             whereCriteria.add(" date(login_time) <= :" + END_DATE);
-            params.addValue(END_DATE, dateMap.get(END_DATE));
+            params.addValue(END_DATE, end.get());
         }
         if (!whereCriteria.isEmpty()) {
             query.append(" where ");
@@ -53,23 +55,28 @@ public class LoginHistoryDaoImpl implements LoginHistoryDao {
         return jdbcTemplate.queryForList(query.toString(), params, String.class);
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
-    public List<UserCount> getUserAndLoggedTimes(MultiValueMap<String, String> queryMap) {
+    public List<UserCount> getUserAndLoggedTimes(Optional<LocalDate> start, Optional<LocalDate> end, MultiValueMap<String, String> queryMap) {
         StringBuilder query = new StringBuilder("select distinct user, count(user) from login");
         MapSqlParameterSource params = new MapSqlParameterSource();
         List<String> whereCriteria = new ArrayList<>();
-        for (String key : queryMap.keySet()) {
-            if (key.equals(START_DATE)) {
-                whereCriteria.add(" date(login_time) >= :" + START_DATE);
-                params.addValue(START_DATE, LocalDate.parse(queryMap.getFirst(START_DATE), DATE_FORMAT_YYYYMMDD));
-            } else if (key.equals(END_DATE)) {
-                whereCriteria.add(" date(login_time) <= :" + END_DATE);
-                params.addValue(END_DATE, LocalDate.parse(queryMap.getFirst(END_DATE), DATE_FORMAT_YYYYMMDD));
-            } else {
-                whereCriteria.add(key + " in (:" + key + ")");
-                params.addValue(key, queryMap.get(key));
-            }
+
+        if (start.isPresent()) {
+            whereCriteria.add(" date(login_time) >= :" + START_DATE);
+            params.addValue(START_DATE, start.get());
         }
+
+        if (end.isPresent()) {
+            whereCriteria.add(" date(login_time) <= :" + END_DATE);
+            params.addValue(END_DATE, end.get());
+        }
+
+        for (String key : queryMap.keySet()) {
+            whereCriteria.add(key + " in (:" + key + ")");
+            params.addValue(key, queryMap.get(key));
+        }
+
         if (!whereCriteria.isEmpty()) {
             query.append(" where ");
             query.append(whereCriteria.stream().collect(Collectors.joining(" and ")));
