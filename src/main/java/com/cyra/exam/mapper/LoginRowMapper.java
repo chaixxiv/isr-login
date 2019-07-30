@@ -11,7 +11,7 @@ public class LoginRowMapper implements RowMapper<Login> {
     public Login mapRow(ResultSet rs, int i) throws SQLException {
         Login login = new Login();
         login.setId(rs.getLong("id"));
-        login.setLoginTime(rs.getDate("login_time"));
+        login.setLoginTime(rs.getTimestamp("login_time"));
         login.setUser(rs.getString("user"));
         login.setAttribute1(rs.getString("attribute1"));
         login.setAttribute2(rs.getString("attribute2"));

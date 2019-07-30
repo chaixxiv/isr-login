@@ -1,16 +1,27 @@
 package com.cyra.exam.domain;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class Login {
 
     public Long id;
-    public Date loginTime;
+    public Timestamp loginTime;
     public String user;
     public String attribute1;
     public String attribute2;
     public String attribute3;
     public String attribute4;
+
+    public Login() {}
+
+    public Login(Timestamp loginTime, String user, String attribute1, String attribute2, String attribute3, String attribute4) {
+        this.loginTime = loginTime;
+        this.user = user;
+        this.attribute1 = attribute1;
+        this.attribute2 = attribute2;
+        this.attribute3 = attribute3;
+        this.attribute4 = attribute4;
+    }
 
     public Long getId() {
         return id;
@@ -20,11 +31,11 @@ public class Login {
         this.id = id;
     }
 
-    public Date getLoginTime() {
+    public Timestamp getLoginTime() {
         return loginTime;
     }
 
-    public void setLoginTime(Date loginTime) {
+    public void setLoginTime(Timestamp loginTime) {
         this.loginTime = loginTime;
     }
 
