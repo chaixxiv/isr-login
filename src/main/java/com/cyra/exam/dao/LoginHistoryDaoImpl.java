@@ -45,8 +45,8 @@ public class LoginHistoryDaoImpl implements LoginHistoryDao {
             params.addValue(START_DATE, start.get());
         }
         if (end.isPresent()) {
-            whereCriteria.add(" date(login_time) <= :" + END_DATE);
-            params.addValue(END_DATE, end.get());
+            whereCriteria.add(" date(login_time) < :" + END_DATE);
+            params.addValue(END_DATE, end.get().plusDays(1));
         }
         if (!whereCriteria.isEmpty()) {
             query.append(" where ");
@@ -69,8 +69,8 @@ public class LoginHistoryDaoImpl implements LoginHistoryDao {
         }
 
         if (end.isPresent()) {
-            whereCriteria.add(" date(login_time) <= :" + END_DATE);
-            params.addValue(END_DATE, end.get());
+            whereCriteria.add(" date(login_time) < :" + END_DATE);
+            params.addValue(END_DATE, end.get().plusDays(1));
         }
 
         for (String key : queryMap.keySet()) {

@@ -24,41 +24,41 @@ public class App {
     }
 
     //TODO: remove this and put in the test class
-    @Bean
-    public CommandLineRunner demoData(JdbcTemplate jdbcTemplate) {
-        return args -> {
-            Faker faker = new Faker();
-            List<Login> loginList = new ArrayList<>();
-            for (int i=1; i<100000; i++) {
-                if (i % 10000 == 0) {
-                    faker = new Faker();
-                }
-
-                String username = faker.name().firstName();
-                loginList.add(new Login(Timestamp.valueOf(LocalDateTime.now().plusHours(i)), username, faker.color().name() + i,
-                        faker.cat().name() + i, faker.dog().breed() + i, faker.pokemon().name() + i));
-            }
-
-            String sql = "INSERT INTO login " +
-                    "(login_time, user, attribute1, attribute2, attribute3, attribute4) values (?, ?, ?, ?, ?, ?)";
-
-            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-                @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    Login login = loginList.get(i);
-                    ps.setTimestamp(1, login.getLoginTime());
-                    ps.setString(2, login.getUser());
-                    ps.setString(3, login.getAttribute1());
-                    ps.setString(4, login.getAttribute2());
-                    ps.setString(5, login.getAttribute3());
-                    ps.setString(6, login.getAttribute4());
-                }
-
-                @Override
-                public int getBatchSize() {
-                    return loginList.size();
-                }
-            });
-        };
-    }
+//    @Bean
+//    public CommandLineRunner demoData(JdbcTemplate jdbcTemplate) {
+//        return args -> {
+//            Faker faker = new Faker();
+//            List<Login> loginList = new ArrayList<>();
+//            for (int i=1; i<100000; i++) {
+//                if (i % 10000 == 0) {
+//                    faker = new Faker();
+//                }
+//
+//                String username = faker.name().firstName();
+//                loginList.add(new Login(Timestamp.valueOf(LocalDateTime.now().plusHours(i)), username, faker.color().name() + i,
+//                        faker.cat().name() + i, faker.dog().breed() + i, faker.pokemon().name() + i));
+//            }
+//
+//            String sql = "INSERT INTO login " +
+//                    "(login_time, user, attribute1, attribute2, attribute3, attribute4) values (?, ?, ?, ?, ?, ?)";
+//
+//            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+//                @Override
+//                public void setValues(PreparedStatement ps, int i) throws SQLException {
+//                    Login login = loginList.get(i);
+//                    ps.setTimestamp(1, login.getLoginTime());
+//                    ps.setString(2, login.getUser());
+//                    ps.setString(3, login.getAttribute1());
+//                    ps.setString(4, login.getAttribute2());
+//                    ps.setString(5, login.getAttribute3());
+//                    ps.setString(6, login.getAttribute4());
+//                }
+//
+//                @Override
+//                public int getBatchSize() {
+//                    return loginList.size();
+//                }
+//            });
+//        };
+//    }
 }
