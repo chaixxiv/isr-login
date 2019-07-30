@@ -2,6 +2,8 @@ package com.cyra.exam.controller;
 
 import com.cyra.exam.domain.UserCount;
 import com.cyra.exam.service.LoginHistoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -21,8 +23,11 @@ public class LoginHistoryController {
     @Autowired
     private LoginHistoryService loginHistoryService;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginHistoryController.class);
+
     @GetMapping("/dates")
     public ResponseEntity<List<LocalDate>> getLoginDates() {
+        LOGGER.info("Getting all unique dates...");
         List<LocalDate> uniqueDates = loginHistoryService.getUniqueDates();
         return new ResponseEntity<>(uniqueDates, HttpStatus.OK);
     }
@@ -30,6 +35,7 @@ public class LoginHistoryController {
     @GetMapping("/users")
     public ResponseEntity<List<String>> getUsersByLoginDate(@RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate start,
                                                             @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate end) {
+        LOGGER.info("Getting all unique users by login date");
         List<String> users = loginHistoryService.getUsersByLoginDate(Optional.ofNullable(start), Optional.ofNullable(end));
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
@@ -40,6 +46,7 @@ public class LoginHistoryController {
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate end,
             @RequestParam MultiValueMap<String, String> queryMap) {
 
+        LOGGER.info("Getting all users times of logged in");
         queryMap.remove("start");
         queryMap.remove("end");
         List<UserCount> users = loginHistoryService.getUserAndLoggedTimes(Optional.ofNullable(start), Optional.ofNullable(end), queryMap);
