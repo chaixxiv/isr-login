@@ -33,21 +33,11 @@ public class LoginHistoryDaoImpl implements LoginHistoryDao {
         return jdbcTemplate.queryForList("SELECT DISTINCT DATE(login_time) from login order by login_time asc", Collections.emptyMap(), LocalDate.class);
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
     public List<String> getUsersByLoginDate(Optional<LocalDate> start, Optional<LocalDate> end) {
         StringBuilder query = new StringBuilder("select distinct user from login");
         MapSqlParameterSource params = new MapSqlParameterSource();
-        List<String> whereCriteria = new ArrayList<>();
-        //TODO: reduce duplication
-        if (start.isPresent()) {
-            whereCriteria.add(" date(login_time) >= :" + START_DATE);
-            params.addValue(START_DATE, start.get());
-        }
-        if (end.isPresent()) {
-            whereCriteria.add(" date(login_time) < :" + END_DATE);
-            params.addValue(END_DATE, end.get().plusDays(1));
-        }
+        List<String> whereCriteria = getRangeDateList(start, end, params);
         if (!whereCriteria.isEmpty()) {
             query.append(" where ");
             query.append(whereCriteria.stream().collect(Collectors.joining(" and ")));
@@ -56,22 +46,11 @@ public class LoginHistoryDaoImpl implements LoginHistoryDao {
         return jdbcTemplate.queryForList(query.toString(), params, String.class);
     }
 
-    @SuppressWarnings("Duplicates")
     @Override
     public List<UserCount> getUserAndLoggedTimes(Optional<LocalDate> start, Optional<LocalDate> end, MultiValueMap<String, String> queryMap) {
         StringBuilder query = new StringBuilder("select distinct user, count(user) from login");
         MapSqlParameterSource params = new MapSqlParameterSource();
-        List<String> whereCriteria = new ArrayList<>();
-
-        if (start.isPresent()) {
-            whereCriteria.add(" date(login_time) >= :" + START_DATE);
-            params.addValue(START_DATE, start.get());
-        }
-
-        if (end.isPresent()) {
-            whereCriteria.add(" date(login_time) < :" + END_DATE);
-            params.addValue(END_DATE, end.get().plusDays(1));
-        }
+        List<String> whereCriteria = getRangeDateList(start, end, params);
 
         for (String key : queryMap.keySet()) {
             whereCriteria.add(key + " in (:" + key + ")");
@@ -84,5 +63,18 @@ public class LoginHistoryDaoImpl implements LoginHistoryDao {
         }
         query.append(" group by user");
         return jdbcTemplate.query(query.toString(), params, new UserCountMapper());
+    }
+
+    private List<String> getRangeDateList(Optional<LocalDate> start, Optional<LocalDate> end, MapSqlParameterSource params) {
+        List<String> whereCriteria = new ArrayList<>();
+        if (start.isPresent()) {
+            whereCriteria.add(" date(login_time) >= :" + START_DATE);
+            params.addValue(START_DATE, start.get());
+        }
+        if (end.isPresent()) {
+            whereCriteria.add(" date(login_time) < :" + END_DATE);
+            params.addValue(END_DATE, end.get().plusDays(1));
+        }
+        return whereCriteria;
     }
 }

@@ -1,0 +1,181 @@
+{
+	"info": {
+		"_postman_id": "b42e3334-a34c-4460-899e-dab67ffcc3f6",
+		"name": "isr-login",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8080/test/dates",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6d292a3c-fcd9-47e6-be69-ff50b89c4e6c",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"array response length is 41728\", function() {",
+							"  pm.expect(pm.response.json().length).to.eq(4172);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/test/dates",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"test",
+						"dates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/test/users?start=20180802&end=20180802",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "204a1cca-0522-42c6-95b9-d4b7b1a99988",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"usernames in response are correct\", function() {",
+							"  var responseArr = pm.response.json();",
+							"  responseArr.forEach((username) => {",
+							"      pm.expect(username).to.be.oneOf(['jan', 'cyra']);",
+							"  })",
+							"});",
+							"",
+							"pm.test(\"array response length is correct\", function() {",
+							"    pm.expect(pm.response.json().length).to.eq(2); ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/test/users?start=20180802&end=20180802",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"test",
+						"users"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "20180802"
+						},
+						{
+							"key": "end",
+							"value": "20180802"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/test/logins?start=20180802&end=20180802&attribute1=a1&attribute1=c1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9703ca1d-35b6-4987-a5c1-3c7bcf148cc8",
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"usernames in response are correct\", function() {",
+							"  var responseArr = pm.response.json();",
+							"  responseArr.forEach((result) => {",
+							"      if (result['user'] === 'cyra') {",
+							"        pm.expect(result['count']).to.be.eq(2);",
+							"      }",
+							"  })",
+							"});",
+							"",
+							"pm.test(\"array response length is correct\", function() {",
+							"    pm.expect(pm.response.json().length).to.eq(2); ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/test/logins?start=20180802&end=20180802&attribute1=a1&attribute1=c1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"test",
+						"logins"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "20180802"
+						},
+						{
+							"key": "end",
+							"value": "20180802"
+						},
+						{
+							"key": "attribute1",
+							"value": "a1"
+						},
+						{
+							"key": "attribute2",
+							"value": "a2",
+							"disabled": true
+						},
+						{
+							"key": "attribute1",
+							"value": "c1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
