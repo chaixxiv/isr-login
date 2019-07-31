@@ -18,7 +18,7 @@
 							"});",
 							"",
 							"pm.test(\"array response length is 41728\", function() {",
-							"  pm.expect(pm.response.json().length).to.eq(4172);",
+							"  pm.expect(pm.response.json()['result'].length).to.eq(4172);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -59,14 +59,14 @@
 							"});",
 							"",
 							"pm.test(\"usernames in response are correct\", function() {",
-							"  var responseArr = pm.response.json();",
-							"  responseArr.forEach((username) => {",
+							"  var results = pm.response.json()['result'];",
+							"  results.forEach((username) => {",
 							"      pm.expect(username).to.be.oneOf(['jan', 'cyra']);",
 							"  })",
 							"});",
 							"",
 							"pm.test(\"array response length is correct\", function() {",
-							"    pm.expect(pm.response.json().length).to.eq(2); ",
+							"    pm.expect(pm.response.json()['result'].length).to.eq(2); ",
 							"});"
 						],
 						"type": "text/javascript"
@@ -117,8 +117,8 @@
 							"});",
 							"",
 							"pm.test(\"usernames in response are correct\", function() {",
-							"  var responseArr = pm.response.json();",
-							"  responseArr.forEach((result) => {",
+							"  var result = pm.response.json()['result'];",
+							"  result.forEach((result) => {",
 							"      if (result['user'] === 'cyra') {",
 							"        pm.expect(result['count']).to.be.eq(2);",
 							"      }",
@@ -126,7 +126,7 @@
 							"});",
 							"",
 							"pm.test(\"array response length is correct\", function() {",
-							"    pm.expect(pm.response.json().length).to.eq(2); ",
+							"    pm.expect(pm.response.json()['result'].length).to.eq(2); ",
 							"});"
 						],
 						"type": "text/javascript"
@@ -141,7 +141,8 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/test/logins?start=20180802&end=20180802&attribute1=a1&attribute1=c1",
+					"raw": "http://localhost:8080/test/logins?start=20180802&end=20180802&attribute1=a1&attribute1=c1",
+					"protocol": "http",
 					"host": [
 						"localhost"
 					],
@@ -171,6 +172,116 @@
 						{
 							"key": "attribute1",
 							"value": "c1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/test/users?start=20180802&end=20180801",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8dcfed48-e11e-44a6-839c-04e61e38dea5",
+						"exec": [
+							"pm.test(\"status is failed\", function () {",
+							"    var response = pm.response.json();",
+							"    pm.expect(response['status']).to.eq('error');",
+							"});",
+							"",
+							"pm.test(\"response message is in bad format\", function () {",
+							"    var response = pm.response.json();",
+							"    pm.expect(response['message']).to.eq('start date should be before end date');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/test/users?start=20180802&end=20180801",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"test",
+						"users"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "20180802"
+						},
+						{
+							"key": "end",
+							"value": "20180801"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/test/users?start=201808-02&end=20180802",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "50de82b4-93d3-42c0-85c4-72e2bc770ecf",
+						"exec": [
+							"pm.test(\"response is bad request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"response message is in bad format\", function () {",
+							"    var response = pm.response.json();",
+							"    pm.expect(response['message']).to.eq('start should be in yyyyMMdd format');",
+							"});",
+							"",
+							"pm.test(\"status is error\", function () {",
+							"    var response = pm.response.json();",
+							"    pm.expect(response['status']).to.eq('error');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/test/users?start=201808-02&end=20180802",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"test",
+						"users"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "201808-02"
+						},
+						{
+							"key": "end",
+							"value": "20180802"
 						}
 					]
 				}

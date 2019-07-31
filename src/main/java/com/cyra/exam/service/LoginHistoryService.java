@@ -2,6 +2,7 @@ package com.cyra.exam.service;
 
 import com.cyra.exam.dao.LoginHistoryDao;
 import com.cyra.exam.domain.UserCount;
+import com.cyra.exam.exception.RangeDateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -20,11 +21,17 @@ public class LoginHistoryService {
         return loginHistoryDao.getUniqueDates();
     }
 
-    public List<String> getUsersByLoginDate(Optional<LocalDate> start, Optional<LocalDate> end){
+    public List<String> getUsersByLoginDate(Optional<LocalDate> start, Optional<LocalDate> end) throws RangeDateException {
+        if ((start.isPresent() && end.isPresent()) && start.get().isAfter(end.get())) {
+            throw new RangeDateException("start date should be before end date");
+        }
         return loginHistoryDao.getUsersByLoginDate(start, end);
     }
 
-    public List<UserCount> getUserAndLoggedTimes(Optional<LocalDate> start, Optional<LocalDate> end, MultiValueMap<String, String> queryMap) {
+    public List<UserCount> getUserAndLoggedTimes(Optional<LocalDate> start, Optional<LocalDate> end, MultiValueMap<String, String> queryMap) throws RangeDateException {
+        if ((start.isPresent() && end.isPresent()) && start.get().isAfter(end.get())) {
+            throw new RangeDateException("start date should be before end date");
+        }
         return loginHistoryDao.getUserAndLoggedTimes(start, end, queryMap);
     }
 }

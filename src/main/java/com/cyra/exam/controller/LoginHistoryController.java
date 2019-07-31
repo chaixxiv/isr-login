@@ -1,6 +1,7 @@
 package com.cyra.exam.controller;
 
 import com.cyra.exam.domain.UserCount;
+import com.cyra.exam.exception.RangeDateException;
 import com.cyra.exam.service.LoginHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,30 +27,30 @@ public class LoginHistoryController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginHistoryController.class);
 
     @GetMapping("/dates")
-    public ResponseEntity<List<LocalDate>> getLoginDates() {
+    public ResponseEntity<ApiResponse> getLoginDates() {
         LOGGER.info("Getting all unique dates...");
         List<LocalDate> uniqueDates = loginHistoryService.getUniqueDates();
-        return new ResponseEntity<>(uniqueDates, HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("success", uniqueDates), HttpStatus.OK);
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<String>> getUsersByLoginDate(@RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate start,
-                                                            @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate end) {
+    public ResponseEntity<ApiResponse> getUsersByLoginDate(@RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate start,
+                                                            @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate end) throws RangeDateException {
         LOGGER.info("Getting all unique users by login date");
         List<String> users = loginHistoryService.getUsersByLoginDate(Optional.ofNullable(start), Optional.ofNullable(end));
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("success", users), HttpStatus.OK);
     }
 
     @GetMapping("/logins")
-    public ResponseEntity<List<UserCount>> getUserLoggedTimes(
+    public ResponseEntity<ApiResponse> getUserLoggedTimes(
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate start,
             @RequestParam(required = false) @DateTimeFormat(pattern="yyyyMMdd") LocalDate end,
-            @RequestParam MultiValueMap<String, String> queryMap) {
+            @RequestParam(required = false) MultiValueMap<String, String> queryMap) throws RangeDateException {
 
-        LOGGER.info("Getting all users times of logged in");
+        LOGGER.info("Getting all users and logged in times");
         queryMap.remove("start");
         queryMap.remove("end");
         List<UserCount> users = loginHistoryService.getUserAndLoggedTimes(Optional.ofNullable(start), Optional.ofNullable(end), queryMap);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse("success", users), HttpStatus.OK);
     }
 }
