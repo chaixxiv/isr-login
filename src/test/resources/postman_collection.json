@@ -118,15 +118,8 @@
 							"",
 							"pm.test(\"usernames in response are correct\", function() {",
 							"  var result = pm.response.json()['result'];",
-							"  result.forEach((result) => {",
-							"      if (result['user'] === 'cyra') {",
-							"        pm.expect(result['count']).to.be.eq(2);",
-							"      }",
-							"  })",
-							"});",
-							"",
-							"pm.test(\"array response length is correct\", function() {",
-							"    pm.expect(pm.response.json()['result'].length).to.eq(2); ",
+							"  pm.expect(result['cyra']).to.be.eq(2);",
+							"  ",
 							"});"
 						],
 						"type": "text/javascript"
@@ -265,11 +258,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/test/users?start=201808-02&end=20180802",
+					"raw": "http://18.224.40.34/test/users?start=201808-02&end=20180802",
+					"protocol": "http",
 					"host": [
-						"localhost"
+						"18",
+						"224",
+						"40",
+						"34"
 					],
-					"port": "8080",
 					"path": [
 						"test",
 						"users"

@@ -1,6 +1,5 @@
 package com.cyra.exam.controller;
 
-import com.cyra.exam.domain.UserCount;
 import com.cyra.exam.exception.RangeDateException;
 import com.cyra.exam.service.LoginHistoryService;
 import org.slf4j.Logger;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController("/")
@@ -50,7 +50,7 @@ public class LoginHistoryController {
         LOGGER.info("Getting all users and logged in times");
         queryMap.remove("start");
         queryMap.remove("end");
-        List<UserCount> users = loginHistoryService.getUserAndLoggedTimes(Optional.ofNullable(start), Optional.ofNullable(end), queryMap);
+        Map<String, Integer> users = loginHistoryService.getUserAndLoggedTimes(Optional.ofNullable(start), Optional.ofNullable(end), queryMap);
         return new ResponseEntity<>(new ApiResponse("success", users), HttpStatus.OK);
     }
 }
