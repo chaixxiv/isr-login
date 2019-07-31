@@ -1,6 +1,5 @@
 package com.cyra.exam.dao;
 
-import com.cyra.exam.domain.Login;
 import com.cyra.exam.domain.UserCount;
 import com.cyra.exam.mapper.UserCountMapper;
 import org.springframework.beans.factory.annotation.Autowired;
