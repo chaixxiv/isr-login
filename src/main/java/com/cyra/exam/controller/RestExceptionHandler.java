@@ -15,7 +15,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        String error = MessageFormat.format("{0} should be in yyyyMMdd format", ex.getName(), ex.getRequiredType().getName());
+        String error = MessageFormat.format("{0} should be in yyyyMMdd format", ex.getName());
         return buildResponseEntity(new ApiResponse(HttpStatus.BAD_REQUEST, "error", error, ex));
     }
 
